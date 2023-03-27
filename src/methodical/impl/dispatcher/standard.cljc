@@ -177,7 +177,7 @@
   describe/Describable
   (describe [this]
     (format "It uses the dispatcher `%s`\nwith hierarchy `%s`\nand prefs `%s`.\n\nThe default value is `%s`."
-            (.getCanonicalName (class this))
+            (#?(:cljr .FullName :default .getCanonicalName) (class this))
             (pr-str hierarchy-var)
             (pr-str prefs)
             (pr-str default-value))))

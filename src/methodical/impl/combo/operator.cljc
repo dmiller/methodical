@@ -207,7 +207,7 @@
   describe/Describable
   (describe [this]
     (format "It uses the method combination `%s`\nwith the operator `%s`."
-            (.getCanonicalName (class this))
+            (#?(:cljr .FullName :default .getCanonicalName) (class this))
             (pr-str operator-name))))
 
 (defn operator-method-combination

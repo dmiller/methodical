@@ -108,7 +108,7 @@
   describe/Describable
   (describe [this]
     (format "It uses the method combination `%s`\nwith the threading strategy `%s`."
-            (.getCanonicalName (class this))
+            (#?(:cljr .FullName :default .getCanonicalName) (class this))
             (pr-str threading-type))))
 
 (defn threading-method-combination

@@ -88,7 +88,7 @@
                    (combo.common/add-implicit-next-method-args :before tail)))))))
   (t/testing "Throw Exception on invalid fn tails"
     (t/is (thrown-with-msg?
-           AssertionError
+           #?(:cljr Exception :default AssertionError)
            #"Assert failed:.*\(sequential\? fn-tail\)"
            (combo.common/add-implicit-next-method-args nil nil)))
     (t/is (thrown-with-msg?
