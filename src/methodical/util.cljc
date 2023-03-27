@@ -196,13 +196,13 @@
   be [[clojure.core/isa?]], perhaps partially bound with a hierarchy, or some other 2-arg predicate function."
   [isa?* prefs x y]
   (when (= x y)
-    (throw (IllegalStateException. (format "Cannot prefer dispatch value %s over itself." x))))
+    (throw (#?(:cljr InvalidOperationException. :default IllegalStateException.) (format "Cannot prefer dispatch value %s over itself." x))))
   (when (contains? (get prefs y) x)
-    (throw (IllegalStateException. (format "Preference conflict in multimethod: %s is already preferred to %s" y x))))
+    (throw (#?(:cljr InvalidOperationException. :default IllegalStateException.) (format "Preference conflict in multimethod: %s is already preferred to %s" y x))))
   ;; this is not actually a restriction that is enforced by vanilla Clojure multimethods, but after thinking about
   ;; it really doesn't seem to make sense to allow you to define a preference that will never be used
   (when (isa?* y x)
-    (throw (IllegalStateException.
+    (throw (#?(:cljr InvalidOperationException. :default IllegalStateException.)
             (format "Preference conflict in multimethod: cannot prefer %s over its descendant %s."
                     x y))))
   (update prefs x #(conj (set %) y)))
@@ -213,14 +213,14 @@
   [multifn dispatch-val-x dispatch-val-y]
   {:pre [(some? multifn)]}
   (when (= dispatch-val-x dispatch-val-y)
-    (throw (IllegalStateException. (format "Cannot prefer dispatch value %s over itself." dispatch-val-x))))
+    (throw (#?(:cljr InvalidOperationException. :default IllegalStateException.) (format "Cannot prefer dispatch value %s over itself." dispatch-val-x))))
   (let [prefs (i/prefers multifn)]
     (when (contains? (get prefs dispatch-val-y) dispatch-val-x)
-      (throw (IllegalStateException. (format "Preference conflict in multimethod: %s is already preferred to %s"
+      (throw (#?(:cljr InvalidOperationException. :default IllegalStateException.) (format "Preference conflict in multimethod: %s is already preferred to %s"
                                              dispatch-val-y
                                              dispatch-val-x))))
     (when (i/dominates? (i/with-prefers multifn nil) dispatch-val-y dispatch-val-x)
-      (throw (IllegalStateException.
+      (throw (#?(:cljr InvalidOperationException. :default IllegalStateException.)
               (format "Preference conflict in multimethod: cannot prefer %s over its descendant %s."
                       dispatch-val-x
                       dispatch-val-y))))

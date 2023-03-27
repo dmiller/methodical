@@ -18,7 +18,7 @@
    [methodical.util.describe :as describe]
    [pretty.core :as pretty])
   (:import
-   (java.lang.ref WeakReference)
+   (#?(:cljr System :default java.lang.ref) WeakReference)
    (methodical.interface Cache)))
 
 (set! *warn-on-reflection* true)
@@ -30,8 +30,8 @@
   (pretty [_]
     (concat ['watching-cache cache 'watching] refs))
 
-  Object
-  (finalize [this]
+   Object
+  (#?(:cljr Finalize :clj finalize) [this]
     (remove-watches this))
 
   Cache
@@ -57,12 +57,12 @@
 
   describe/Describable
   (describe [this]
-    (format "It caches methods using a `%s`." (.getCanonicalName (class this)))))
+    (format "It caches methods using a `%s`." (#?(:cljr .FullName :default .getCanonicalName) (class this)))))
 
 (defn- cache-watch-fn [cache]
   (let [cache-weak-ref (WeakReference. cache)]
     (fn [_ _ old-value new-value]
-      (when-let [cache (.get cache-weak-ref)]
+      (when-let [cache (#?(:cljr .get_Target :default .get) cache-weak-ref)]
         (when-not (= old-value new-value)
           (i/clear-cache! cache))))))
 

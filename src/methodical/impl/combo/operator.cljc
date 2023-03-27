@@ -181,7 +181,7 @@
     (list 'operator-method-combination operator-name))
 
   Object
-  (equals [_ another]
+  (#?(:cljr Equals :default equals) [_ another]
     (and (instance? OperatorMethodCombination another)
          (= operator-name (.operator-name ^OperatorMethodCombination another))))
 

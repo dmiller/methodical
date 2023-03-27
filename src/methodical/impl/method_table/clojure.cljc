@@ -20,7 +20,7 @@
       '(clojure-method-table)))
 
   Object
-  (equals [_ another]
+  (#?(:cljr Equals :default equals) [_ another]
     (and (instance? ClojureMethodTable another)
          (= m (.m ^ClojureMethodTable another))))
 
@@ -44,10 +44,10 @@
         (ClojureMethodTable. new-m))))
 
   (add-aux-method [_ _ _ _]
-    (throw (UnsupportedOperationException. "Clojure-style multimethods do not support auxiliary methods.")))
+    (throw (#?(:cljr InvalidOperationException. :default UnsupportedOperationException.) "Clojure-style multimethods do not support auxiliary methods.")))
 
   (remove-aux-method [_ _ _ _]
-    (throw (UnsupportedOperationException. "Clojure-style multimethods do not support auxiliary methods.")))
+    (throw (#?(:cljr InvalidOperationException. :default UnsupportedOperationException.) "Clojure-style multimethods do not support auxiliary methods.")))
 
   clojure.protocols/Datafiable
   (datafy [this]
@@ -57,5 +57,5 @@
   describe/Describable
   (describe [this]
     (format "It uses the method table `%s`. These primary methods are known:\n\n%s"
-            (.getCanonicalName (class this))
+            (#?(:cljr .FullName :default .getCanonicalName) (class this))
             (method-table.common/describe-primary-methods m))))

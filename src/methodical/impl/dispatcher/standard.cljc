@@ -120,7 +120,7 @@
               [:prefers prefs])))
 
   Object
-  (equals [_ another]
+  (#?(:cljr Equals :default equals) [_ another]
     (and
      (instance? StandardDispatcher another)
      (let [^StandardDispatcher another another]

@@ -34,7 +34,7 @@
   ;;     1 | 01     | [:default :y]
   ;;     0 | 00     | [:default :default]
   (let [cnt (count dispatch-value)]
-    (for [i (reverse (range (dec (int (Math/pow 2 cnt)))))]
+    (for [i (reverse (range (dec (int (#?(:cljr Math/Pow :default Math/pow) 2 cnt)))))]
       (vec
        (for [j (reverse (range 0 cnt))]
          (if (pos? (bit-and i (bit-shift-left 1 j)))
@@ -144,7 +144,7 @@
               [:prefers prefs])))
 
   Object
-  (equals [_ another]
+  (#?(:cljr Equals :default equals) [_ another]
     (and
      (instance? MultiDefaultDispatcher another)
      (let [^MultiDefaultDispatcher another another]
@@ -201,7 +201,7 @@
   describe/Describable
   (describe [this]
     (format "It uses the dispatcher `%s`\nwith hierarchy `%s`\nand prefs `%s`.\n\nThe default value is `%s`."
-            (.getCanonicalName (class this))
+            (#?(:cljr .FullName :default .getCanonicalName) (class this))
             (pr-str hierarchy-var)
             (pr-str prefs)
             (pr-str default-value))))

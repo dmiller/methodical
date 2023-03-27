@@ -18,7 +18,7 @@
 
 (defn- handle-effective-method-exception [^Exception e mta]
   (if-let [dispatch-val (::unmatched-dispatch-value (ex-data e))]
-    (throw (UnsupportedOperationException.
+    (throw ( #?(:cljr InvalidOperationException. :default UnsupportedOperationException.)
              (format "No matching%s method for dispatch value %s" (if-let [nm (:name mta)]
                                                                     (str " " nm)
                                                                     "")
@@ -72,7 +72,7 @@
     (list 'multifn impl))
 
   Object
-  (equals [_ another]
+  (#?(:cljr Equals :default equals) [_ another]
     (and (instance? StandardMultiFn another)
          (= impl (.impl ^StandardMultiFn another))))
 
@@ -176,6 +176,7 @@
          (catch Exception e
            (handle-effective-method-exception e mta))))
 
+  #?@(:clj [
   java.util.concurrent.Callable
   (call [_]
     (invoke-multifn impl mta))
@@ -183,6 +184,7 @@
   java.lang.Runnable
   (run [_]
     (invoke-multifn impl mta))
+	])
 
   clojure.lang.IFn
   (invoke [_]

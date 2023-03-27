@@ -17,7 +17,7 @@
     (list 'cached-multifn-impl impl cache))
 
   Object
-  (equals [_ another]
+  (#?(:cljr Equals :default equals) [_ another]
     (and (instance? CachedMultiFnImpl another)
          (= impl  (.impl ^CachedMultiFnImpl another))
          ;; TODO - does this make sense?

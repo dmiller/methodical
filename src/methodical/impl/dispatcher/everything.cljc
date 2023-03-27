@@ -23,7 +23,7 @@
         [:prefers prefs]))))
 
   Object
-  (equals [_ another]
+  (#?(:cljr Equals :Default equals) [_ another]
     (and
      (instance? EverythingDispatcher another)
      (let [^EverythingDispatcher another another]

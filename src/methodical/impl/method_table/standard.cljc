@@ -36,7 +36,7 @@
       (list 'standard-method-table)))
 
   Object
-  (equals [_ another]
+  (#?(:cljr Equals :default equals) [_ another]
     (and (instance? StandardMethodTable another)
          (= primary (.primary ^StandardMethodTable another))
          (= aux (.aux ^StandardMethodTable another))))
@@ -97,6 +97,6 @@
 
   describe/Describable
   (describe [this]
-    (str (format "It uses the method table `%s`." (.getCanonicalName (class this)))
+    (str (format "It uses the method table `%s`." (#?(:cljr .FullName :default .getCanonicalName) (class this)))
          (method-table.common/describe-primary-methods primary)
          (method-table.common/describe-aux-methods aux))))

@@ -67,7 +67,7 @@
     '(clos-method-combination))
 
   Object
-  (equals [_ another]
+  (#?(:cljr Equals :default equals) [_ another]
     (instance? CLOSStandardMethodCombination another))
 
   MethodCombination
@@ -89,4 +89,4 @@
 
   describe/Describable
   (describe [this]
-    (format "It uses the method combination `%s`." (.getCanonicalName (class this)))))
+    (format "It uses the method combination `%s`." (#?(:cljr .FullName :default .getCanonicalName) (class this)))))

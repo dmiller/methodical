@@ -3,14 +3,14 @@
             [methodical.interface :as i]
             [methodical.util :as u]
             [pretty.core :as pretty]
-            [puget.printer :as puget]))
+            #?(:clj [puget.printer :as puget])))
 
 (set! *warn-on-reflection* true)
 
 (def ^:dynamic *color*
   "Whether or not to print the trace in color. True by default, unless the env var `NO_COLOR` is true."
-  (if-let [env-var-value (System/getenv "NO_COLOR")]
-    (complement (Boolean/parseBoolean env-var-value))
+  (if-let [env-var-value (#?(:cljr Environment/GetEnvironmentVariable :default System/getenv) "NO_COLOR")]
+    (complement (#?(:cljr Boolean/Parse :default Boolean/parseBoolean) env-var-value))
     true))
 
 (def ^:dynamic *pprinter*
@@ -27,11 +27,13 @@
 
 (defn- default-color-printer [x]
   ;; don't print in black. I can't see it
-  (puget/cprint x {:color-scheme   {:nil nil}
-                   :print-handlers default-print-handlers}))
+  #?(:cljr (print x)
+     :default (puget/cprint x {:color-scheme   {:nil nil}
+                   :print-handlers default-print-handlers})))
 
 (defn- default-boring-printer [x]
-  (puget/pprint x {:print-handlers default-print-handlers}))
+  #?(:cljr (clojure.pprint/pprint x) 
+     :default (puget/pprint x {:print-handlers default-print-handlers})))
 
 (defn- pprint
   "Pretty print a form `x`."

@@ -112,7 +112,7 @@
     (list 'standard-multifn-impl combo dispatcher method-table))
 
   Object
-  (equals [_ another]
+  (#?(:cljr Equals :default equals) [_ another]
     (and (instance? StandardMultiFnImpl another)
          (let [^StandardMultiFnImpl another another]
            (and (= combo (.combo another))

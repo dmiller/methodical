@@ -86,7 +86,7 @@
 
   MethodCombination
   Object
-  (equals [_ another]
+  (#?(:cljr Equals :default equals) [_ another]
     (and (instance? ThreadingMethodCombination another)
          (= threading-type (.threading-type ^ThreadingMethodCombination another))))
 

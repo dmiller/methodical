@@ -19,7 +19,7 @@
     '(clojure-method-combination))
 
   Object
-  (equals [_ another]
+  (#?(:cljr Equals :default equals) [_ another]
     (instance? ClojureMethodCombination another))
 
   MethodCombination
@@ -28,7 +28,7 @@
 
   (combine-methods [_ [primary-method] aux-methods]
     (when (seq aux-methods)
-      (throw (UnsupportedOperationException. "Clojure-style multimethods do not support auxiliary methods.")))
+      (throw (#?(:cljr InvalidOperationException. :default UnsupportedOperationException.) "Clojure-style multimethods do not support auxiliary methods.")))
     primary-method)
 
   (transform-fn-tail [_this _qualifier fn-tail]
@@ -40,4 +40,4 @@
 
   describe/Describable
   (describe [this]
-    (format "It uses the method combination `%s`." (.getCanonicalName (class this)))))
+    (format "It uses the method combination `%s`." (#?(:cljr .FullName :default .getCanonicalName) (class this)))))
