@@ -39,10 +39,10 @@
                (keys (.getWatches ^clojure.lang.Atom a))))))
 
   (t/testing "watching-cache should throw an Exception if you try to pass invalid args."
-    (t/is (thrown-with-msg? IllegalArgumentException #"Don't know how to create ISeq"
+    (t/is (thrown-with-msg? #?(:cljr ArgumentException :default IllegalArgumentException) #"Don't know how to create ISeq"
                             (cache.watching/add-watches (cache) #'clojure.core/global-hierarchy)))
 
-    (t/is (thrown-with-msg? AssertionError #"Assert failed"
+    (t/is (thrown-with-msg? #?(:cljr Exception :default AssertionError) #"Assert failed"
                             (cache.watching/add-watches (cache) [:a :b :c]))))
 
   (t/testing "Passing another WatchingCache to add-watches should return a new, flattened WatchingCache."

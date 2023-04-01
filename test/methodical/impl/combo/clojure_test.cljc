@@ -6,7 +6,7 @@
 
 (t/deftest aux-methods-test
   (t/is (thrown-with-msg?
-         UnsupportedOperationException
+         #?(:cljr InvalidOperationException :default UnsupportedOperationException)
          #"Clojure-style multimethods do not support auxiliary methods."
          (i/combine-methods
           (combo.clojure/->ClojureMethodCombination)
@@ -21,12 +21,12 @@
   [_]
   Object)
 
-(m/defmethod clojure-multifn Number
+(m/defmethod clojure-multifn #?(:cljr ValueType :default Number)
   [_]
-  Number)
+  #?(:cljr ValueType :default Number))
 
 (t/deftest e2e-test
-  (t/is (= Number
+  (t/is (= #?(:cljr ValueType :default Number)
            (clojure-multifn 100))))
 
 (t/deftest effective-method-metadata-test
@@ -34,8 +34,8 @@
                                            true  (m/add-primary-method clojure-multifn :default (fn [_] :default))}
           [klass expected-dispatch-value] {nil     (when default? :default)
                                            Object  Object
-                                           Number  Number
-                                           Integer Number}]
+                                           #?(:cljr ValueType :default Number)  #?(:cljr ValueType :default Number)
+                                           #?(:cljr Int64 :default Integer) #?(:cljr ValueType :default Number)}]
     (t/testing (format "%s with default? %s" (pr-str klass) default?)
       (t/is (= (when expected-dispatch-value
                  expected-dispatch-value)

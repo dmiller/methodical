@@ -3,7 +3,7 @@
    [clojure.string :as str]
    [clojure.test :as t]
    [methodical.core :as m]
-   [methodical.impl.combo.operator :as combo.operator]
+   [methodical.impl.combo.operator :as combo.operator]	
    [methodical.interface :as i]))
 
 (t/deftest primary-test
@@ -223,7 +223,7 @@
   (t/is (= (combo.operator/operator-method-combination :do)
            (combo.operator/->OperatorMethodCombination :do)))
 
-  (t/is (thrown-with-msg? IllegalArgumentException #"No method"
+  (t/is (thrown-with-msg? #?(:cljr ArgumentException :default IllegalArgumentException) #"No method"
                           (combo.operator/operator-method-combination :nope))))
 
 (t/deftest no-methods-test

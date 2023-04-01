@@ -279,7 +279,7 @@
     (t/is (thrown-with-msg?
            clojure.lang.ExceptionInfo
            (re-pattern
-            (java.util.regex.Pattern/quote
+            (#?(:cljr System.Text.RegularExpressions.Regex/Escape j:default ava.util.regex.Pattern/quote)
              (str "methodical.impl.dispatcher.multi-default-test/ambiguous-mf: "
                   "multiple methods match dispatch value: "
                   ":methodical.impl.dispatcher.multi-default-test/parroty -> :methodical.impl.dispatcher.multi-default-test/parrot "
