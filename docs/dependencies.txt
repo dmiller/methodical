@@ -288,16 +288,19 @@ Level 0
 
 (ns methodical.impl.combo.common-test
   (:require [clojure.test :as t]
-            [methodical.impl.combo.common :as combo.common]))
+            [methodical.impl.combo.common :as combo.common])) 
+PASSED
 
 (ns methodical.impl.dispatcher.common-test
   (:require [clojure.test :as t]
             [methodical.impl.dispatcher.common :as dispatcher.common]))	
+PASSED
 
 (ns methodical.impl.method-table.common-test
   (:require
    [clojure.test :as t]
    [methodical.impl.method-table.common :as method-table.common]))
+PASSED
 			
 
 ======================
@@ -311,23 +314,29 @@ Level 1
             [pretty.core :as pretty])
   (:import methodical.impl.cache.watching.WatchingCache
            methodical.interface.Cache))
+PASSED		   
+		 
 
 (ns methodical.impl.combo.threaded-test
   (:require [clojure.test :as t]
             [methodical.impl.combo.threaded :as combo.threaded]
             [methodical.interface :as i]))
+PASSED
 			
 (ns methodical.impl.method-table.clojure-test
   (:require [clojure.test :as t]
             [methodical.impl.method-table.clojure :as method-table.clojure]))	
-
+PASSED
 
 (ns methodical.impl.method-table.standard-test
   (:require
    [clojure.test :as t]
    [clojure.tools.reader.edn :as edn]
    [methodical.impl.method-table.standard :as method-table.standard]
-   [methodical.interface :as i]))			
+   [methodical.interface :as i]))		
+
+FAIL: Need to download clojure/tools/reader/edn  -- tools.reader package   
+Tests not depending on tools.reader.edn all pass.
 
 ======================
 Level 2
@@ -353,6 +362,8 @@ Level 5
   (:require [clojure.test :as t]
             [methodical.core :as m]
             [methodical.impl :as impl])) 
+			
+PASSED
    
 (ns methodical.datafy-test
   (:require
@@ -360,9 +371,13 @@ Level 5
    [clojure.test :as t]
    [methodical.core :as m]))   
    
+PASSED
+   
 (ns methodical.diamond-inheritance-test
   (:require  [clojure.test :as t]
              [methodical.core :as m]))
+			 
+PASSED
 
 (ns methodical.macros-test
   (:require
@@ -374,7 +389,10 @@ Level 5
    [methodical.interface :as i]
    [methodical.macros :as macros]
    [methodical.util :as u]
-   [potemkin.namespaces :as p.namespaces])) 			
+   [potemkin.namespaces :as p.namespaces])) 
+
+PASSED
+I didn't conditionalize one test properly.  Should be using platform-newlines.  Look for the \r\n.   
 	
 (ns methodical.util-test
   (:require
@@ -384,11 +402,18 @@ Level 5
    [methodical.impl :as impl]
    [methodical.interface :as i]
    [methodical.util :as u]))
+   
+FAIL in (primary-method-test) (:0)
+primary-method `primary-method` should not return default or parent primary methods -- just the exact match.
+expected: (= nil (u/primary-method f String))
+  actual: (not (= nil m1))
 
 (ns methodical.impl.dispatcher-test
   "Tests that run against all of our dispatchers."
   (:require [clojure.test :as t]
             [methodical.core :as m]))
+			
+PASSED
 
 (ns methodical.impl.standard-test
   (:require [clojure.test :as t]
@@ -396,12 +421,15 @@ Level 5
             [methodical.impl :as impl]
             [methodical.impl.standard :as impl.standard]
             [methodical.interface :as i]))	   
+			
+PASSED
  
 (ns methodical.impl.combo.clojure-test
   (:require [clojure.test :as t]
             [methodical.core :as m]
             [methodical.impl.combo.clojure :as combo.clojure]
             [methodical.interface :as i]))  
+PASSED
 			
 (ns methodical.impl.combo.clos-test
   (:require [clojure.string :as str]
@@ -409,6 +437,7 @@ Level 5
             [methodical.core :as m]
             [methodical.impl.combo.clos :as combo.clos]
             [methodical.interface :as i]))
+PASSED -- required fixing a bug in clojure.lang.Keyword
 
 (ns methodical.impl.combo.operator-test
   (:require
@@ -417,11 +446,17 @@ Level 5
    [methodical.core :as m]
    [methodical.impl.combo.operator :as combo.operator]
    [methodical.interface :as i]))	
+PASSED
 
 (ns methodical.impl.dispatcher.everything-test
   (:require [clojure.string :as str]
             [clojure.test :as t]
-            [methodical.core :as m]))			
+            [methodical.core :as m]))		
+FAIL in (e2e-test) (:0)
+expected: (= ["Initiating shutdown..." "Shutting down web server..." "Shutting down task scheduler..."] (str/split-lines (with-out-str (shutdown!))))
+  actual: (not (= ["Initiating shutdown..." "Shutting down web server..." "Shutting down task scheduler..."] ["Initiating shutdown..." "Shutting down web server..." "Shutting down task scheduler..." ""]))			
+  
+  platform-newlines
 
 (ns methodical.impl.dispatcher.multi-default-test
   (:require
@@ -432,6 +467,11 @@ Level 5
   (:import
    (methodical.interface MethodTable)))
 
+PASSED -- however;
+
+operator.cljc:172 recur arg for primitive local: sum is not matching primitive, had: Object, needed Int64
+Auto-boxing loop arg: sum   
+
 (ns methodical.impl.dispatcher.standard-test
   (:require
    [clojure.test :as t]
@@ -441,17 +481,22 @@ Level 5
   (:import
    (methodical.interface MethodTable)))
    
+PASSED
+   
 (ns methodical.impl.multifn.cached-test
   (:require [clojure.math.combinatorics :as combo]
             [clojure.test :as t]
             [methodical.core :as m]))
+			
+**  NEEDS clojure/math/combinatorics -- just one function to replicate.
 
 (ns methodical.impl.multifn.standard-test
   (:require
    [clojure.math.combinatorics :as combo]
    [clojure.test :as t]
    [methodical.core :as m]
-   [methodical.impl.multifn.standard :as multifn.standard]))			
+   [methodical.impl.multifn.standard :as multifn.standard]))	
+PASSED   
 			
 (ns methodical.util.describe-test
   (:require
@@ -460,11 +505,15 @@ Level 5
    [methodical.core :as m]
    [methodical.util.describe :as describe]))  
    
+PASSED
+   
 (ns methodical.util.dispatch-test
   (:require
    [clojure.string :as str]
    [clojure.test :as t]
    [methodical.core :as m]))
+   
+PASSED
 
 (ns methodical.util.trace-test
   (:require [clojure.string :as str]
@@ -473,3 +522,4 @@ Level 5
             [methodical.util.trace :as trace]
             [pretty.core :as pretty]))
    
+6 fail, 1 error

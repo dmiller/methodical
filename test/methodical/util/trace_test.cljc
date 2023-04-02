@@ -21,7 +21,7 @@
                         (fn [_ m] (assoc m :parrot? true)))
       (m/add-aux-method :after [Object :default]
                         (fn [_ m] (assoc m :object? true)))
-      (m/add-aux-method :around [CharSequence :default]
+      (m/add-aux-method :around [#?(:cljr String :default CharSequence) :default]
                         (fn [next-method x m]
                           (next-method x (assoc m :char-seq? true))))))
 

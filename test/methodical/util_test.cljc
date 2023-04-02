@@ -20,7 +20,7 @@
 (defn- test-multifn []  (let [m1 'm1
         m2 'm2]
     (-> (m/default-multifn class)
-        (m/add-primary-method CharSequence m1)
+        (m/add-primary-method #?(:cljr String :default CharSequence) m1)
         (m/add-primary-method :default m2)
         (m/add-aux-method :around :default (fn [next-method x] (next-method x))))))
 
@@ -29,13 +29,13 @@
     (t/testing "primary-method"
       (t/testing "primary-method should return primary methods with exactly the same dispatch value."
         (t/is (= 'm1
-                 (u/primary-method f CharSequence))))
+                 (u/primary-method f #?(:cljr String :default CharSequence)))))
       (t/testing "`primary-method` should not return default or parent primary methods -- just the exact match."
         (t/is (= nil
-                 (u/primary-method f String))))
+                 (u/primary-method f #?(:cljr StringBuilder :default String)))))
       (t/testing "Should return identical methods for multiple calls"
-        (t/is (identical? (u/primary-method f CharSequence)
-                          (u/primary-method f CharSequence)))))))
+        (t/is (identical? (u/primary-method f #?(:cljr String :default CharSequence))
+                          (u/primary-method f #?(:cljr String :default CharSequence))))))))
 
 (t/deftest applicable-primary-method-test
   (let [f (test-multifn)]
@@ -43,13 +43,13 @@
       (t/is (= 'm1
                (u/applicable-primary-method f String)))
       (t/testing "Should include dispatch value metadata"
-        (t/is (= {:dispatch-value CharSequence}
+        (t/is (= {:dispatch-value #?(:cljr String :default CharSequence)}
                  (meta (u/applicable-primary-method f String))))
         (t/is (= {:dispatch-value :default}
-                 (meta (u/applicable-primary-method f Integer)))))
+                 (meta (u/applicable-primary-method f #?(:cljr Int64 :default Integer))))))
       (t/testing "Should return identical methods for multiple calls"
         (t/is (identical? (u/applicable-primary-method f String)
-                          (u/applicable-primary-method f CharSequence)))))))
+                          (u/applicable-primary-method f #?(:cljr String :default CharSequence))))))))
 
 (t/deftest effective-primary-method-test
   (let [f (test-multifn)]
@@ -60,8 +60,8 @@
                  ((u/effective-primary-method f String) ::not-found)))))
     (t/testing "Should include dispatch value metadata"
       (t/is (= {:dispatch-value :default}
-               (meta (u/effective-primary-method f Integer))))
-      (t/is (= {:dispatch-value CharSequence}
+               (meta (u/effective-primary-method f #?(:cljr Int64 :default Integer)))))
+      (t/is (= {:dispatch-value #?(:cljr String :default CharSequence)}
                (meta (u/effective-primary-method f String))))))
   (t/testing "no matching effective method"
     (t/is (= nil
@@ -107,7 +107,7 @@
   (let [m1 (constantly [:char-sequence])
         m2 (constantly [:default])
         f  (-> (m/default-multifn class)
-               (m/add-primary-method CharSequence m1)
+               (m/add-primary-method #?(:cljr String :default CharSequence) m1)
                (m/add-primary-method :default m2))]
     (t/testing "default-primary-method"
       (t/testing "should be able to get the default primary method"
@@ -116,7 +116,7 @@
 
     (t/testing "default-aux-methods"
       (let [f' (-> f
-                   (m/add-aux-method :before CharSequence 'm3)
+                   (m/add-aux-method :before #?(:cljr String :default CharSequence) 'm3)
                    (m/add-aux-method :before :default 'm4)
                    (m/add-aux-method :before :default 'm5))]
         (t/is (= {:before ['m4 'm5]}
@@ -171,22 +171,22 @@
         (let [f2 (m/add-primary-method f1 Object (fn [_]))]
           (t/is (= Object
                    (u/effective-dispatch-value f2 Object)
-                   (u/effective-dispatch-value f2 Integer)))
+                   (u/effective-dispatch-value f2 #?(:cljr Int64 :default Integer))))
           (t/is (= (when default-method? :default)
                    (u/effective-dispatch-value f2 nil)))
           (let [f3 (-> f2
-                       (m/add-aux-method :before Number (fn [_]))
-                       (m/add-aux-method :around CharSequence (fn [_]))
+                       (m/add-aux-method :before #?(:cljr ValueType :default Number) (fn [_]))
+                       (m/add-aux-method :around #?(:cljr String :default CharSequence) (fn [_]))
                        (m/add-primary-method String (fn [_])))]
             (t/is (= Object
-                     (u/effective-dispatch-value f3 java.util.Map)))
+                     (u/effective-dispatch-value f3 #?(:cljr System.Collections.Hashtable :default java.util.Map))))
             (t/testing "primary method is more specific than aux method(s)"
               (t/is (= String
                        (u/effective-dispatch-value f3 String))))
             (t/testing "aux method(s) are more specific than primary method"
-              (t/is (= Number
-                       (u/effective-dispatch-value f3 Number)
-                       (u/effective-dispatch-value f3 Integer)))))))))
+              (t/is (= #?(:cljr ValueType :default Number)
+                       (u/effective-dispatch-value f3 #?(:cljr ValueType :default Number))
+                       (u/effective-dispatch-value f3 #?(:cljr Int64 :default Integer))))))))))
   (t/testing "keyword aux methods"
     (derive ::parrot ::bird)
     (derive ::parakeet ::parrot)
@@ -244,7 +244,7 @@
   (let [m1 (constantly [:char-sequence])
         m2 (constantly [:default])
         f  (-> (m/default-multifn class)
-               (m/add-primary-method CharSequence m1)
+               (m/add-primary-method #?(:cljr String :default CharSequence) m1)
                (m/add-primary-method :default m2))]
     (t/testing "remove-all-primary-methods"
       (t/is (= nil
@@ -267,7 +267,7 @@
       (t/is (= [:char-sequence]
                (remove-primary-method-multifn "String")))
 
-      (u/remove-primary-method! #'remove-primary-method-multifn CharSequence)
+      (u/remove-primary-method! #'remove-primary-method-multifn #?(:cljr String :default CharSequence))
       (t/is (= [:default]
                (remove-primary-method-multifn "String"))))
 
@@ -411,12 +411,12 @@
              (i/prefers (u/prefer-method mf :x :y))))
     (t/testing "should thrown an Exception if you try to add an illegal preference"
       (t/is (thrown-with-msg?
-             IllegalStateException
+             #?(:cljr InvalidOperationException :default IllegalStateException)
              (re-pattern "Cannot prefer dispatch value :x over itself.")
              (u/prefer-method mf :x :x)))
       (let [mf (i/with-prefers mf {:x #{:y}})]
         (t/is (thrown-with-msg?
-               IllegalStateException
+               #?(:cljr InvalidOperationException :default IllegalStateException)
                (re-pattern "Preference conflict in multimethod: :x is already preferred to :y")
                (u/prefer-method mf :y :x))))
       (let [h   (-> (make-hierarchy)
@@ -426,7 +426,7 @@
         (doseq [k [:bird :animal]]
           (t/testing (format "Prefer %s over :toucan" k)
             (t/is (thrown-with-msg?
-                   IllegalStateException
+                   #?(:cljr InvalidOperationException :default IllegalStateException)
                    (re-pattern (format "Preference conflict in multimethod: cannot prefer %s over its descendant :toucan."
                                        k))
                    (u/prefer-method mf2 k :toucan)))))))))

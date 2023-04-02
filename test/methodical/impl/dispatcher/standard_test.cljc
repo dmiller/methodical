@@ -116,7 +116,7 @@
     (t/is (thrown-with-msg?
            clojure.lang.ExceptionInfo
            (re-pattern
-            (java.util.regex.Pattern/quote
+            (#?(:cljr System.Text.RegularExpressions.Regex/Escape :default java.util.regex.Pattern/quote)
              (str "methodical.impl.dispatcher.standard-test/ambiguous-mf: "
                   "multiple methods match dispatch value: "
                   ":methodical.impl.dispatcher.standard-test/parroty -> :methodical.impl.dispatcher.standard-test/parrot "
@@ -129,11 +129,11 @@
         (t/is (= :here false) "should never get here")
         (catch Exception e
           (t/is (= {:method-1 {:ns             (the-ns 'methodical.impl.dispatcher.standard-test)
-                               :file           "methodical/impl/dispatcher/standard_test.clj"
+                               :file           "methodical/impl/dispatcher/standard_test.cljc"             ;;; .lcj => .cljc
                                :line           106
                                :dispatch-value ::parrot}
                     :method-2 {:ns             (the-ns 'methodical.impl.dispatcher.standard-test)
-                               :file           "methodical/impl/dispatcher/standard_test.clj"
+                               :file           "methodical/impl/dispatcher/standard_test.cljc"             ;;; .lcj => .cljc
                                :line           110
                                :dispatch-value ::friend}}
                    (ex-data e))))))))

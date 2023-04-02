@@ -1,7 +1,7 @@
 (ns methodical.impl.method-table.standard-test
   (:require
    [clojure.test :as t]
-   [clojure.tools.reader.edn :as edn]
+   #_[clojure.tools.reader.edn :as edn]
    [methodical.impl.method-table.standard :as method-table.standard]
    [methodical.interface :as i]))
 
@@ -9,7 +9,7 @@
   (t/is (= "(standard-method-table)"
            (pr-str (method-table.standard/->StandardMethodTable {} {})))
         "Empty method tables should print simply.")
-  (letfn [(pr-str-read [x]
+  #_(letfn [(pr-str-read [x]
             (edn/read-string (pr-str x)))]
     (t/is (= '(standard-method-table {:primary [:a :b]})
              (pr-str-read

@@ -279,7 +279,7 @@
     (t/is (thrown-with-msg?
            clojure.lang.ExceptionInfo
            (re-pattern
-            (#?(:cljr System.Text.RegularExpressions.Regex/Escape j:default ava.util.regex.Pattern/quote)
+            (#?(:cljr System.Text.RegularExpressions.Regex/Escape :default java.util.regex.Pattern/quote)
              (str "methodical.impl.dispatcher.multi-default-test/ambiguous-mf: "
                   "multiple methods match dispatch value: "
                   ":methodical.impl.dispatcher.multi-default-test/parroty -> :methodical.impl.dispatcher.multi-default-test/parrot "
@@ -292,11 +292,11 @@
         (t/is (= :here false) "should never get here")
         (catch Exception e
           (t/is (= {:method-1 {:ns             (the-ns 'methodical.impl.dispatcher.multi-default-test)
-                               :file           "methodical/impl/dispatcher/multi_default_test.clj"
+                               :file           "methodical/impl/dispatcher/multi_default_test.cljc"                       ;;;  .clj => .cljc
                                :line           269
                                :dispatch-value ::parrot}
                     :method-2 {:ns             (the-ns 'methodical.impl.dispatcher.multi-default-test)
-                               :file           "methodical/impl/dispatcher/multi_default_test.clj"
+                               :file           "methodical/impl/dispatcher/multi_default_test.cljc"                       ;;;  .clj => .cljc
                                :line           273
                                :dispatch-value ::friend}}
                    (ex-data e))))))))

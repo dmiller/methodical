@@ -18,7 +18,7 @@
                           (thunk))))
 
 (defn- re-quote [^String s]
-  (re-pattern (java.util.regex.Pattern/quote s)))
+  (re-pattern (#?(:cljr System.Text.RegularExpressions.Regex/Escape :default java.util.regex.Pattern/quote) s)))
 
 (defmethod t/assert-expr 'macroexpansion-spec-error? [message [_ error form]]
   (t/assert-expr
@@ -28,7 +28,7 @@
      ~(re-quote error)
      (try
        (macroexpand ~form)
-       (catch clojure.lang.Compiler$CompilerException e#
+       (catch #?(:cljr clojure.lang.Compiler+CompilerException :default clojure.lang.Compiler$CompilerException) e#                  
          (throw (or (ex-cause e#) e#)))))))
 
 (t/deftest parse-defmulti-args-test
@@ -71,7 +71,7 @@
       (t/is (= 'my-multimethod-primary-method-k1-String
                (method-fn-symbol [:k1 'String]))))
     (t/testing "Arbitrary expression dispatch value"
-      (t/is (= 'my-multimethod-primary-method-if-true-String-Integer
+      (t/is (= '#?(:cljr my-multimethod-primary-method-if-True-String-Integer :default my-multimethod-primary-method-if-true-String-Integer)
                (method-fn-symbol '[(if true String Integer)]))))
     (t/testing "Munged function name should include keyword namespaces"
       (t/is (= 'my-multimethod-primary-method-somewhere-something
@@ -214,7 +214,7 @@
     ;; as dispatch values; see [[methodical.macros/default-dispatch-value-spec]] for reasons why.
     (t/is (thrown-with-msg?
            clojure.lang.ExceptionInfo
-           (re-quote "([x] x) - failed: dispatch-value-spec in: [1] at: [:args-for-method-type :aux :dispatch-value]\n")
+           (re-quote "([x] x) - failed: dispatch-value-spec in: [1] at: [:args-for-method-type :aux :dispatch-value]\r\n")
            (#'macros/parse-defmethod-args mf1 '[:before ([x] x) ([x y] x)])))))
 
 (macros/defmethod mf1 :x

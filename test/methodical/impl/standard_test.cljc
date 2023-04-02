@@ -112,7 +112,7 @@
                   "with-method-table should only return a new object if the method table is not=")))
 
         (t/testing "preconditions"
-          (t/is (thrown-with-msg? AssertionError #"Assert failed" (m/with-method-table f {:key 'm}))
+          (t/is (thrown-with-msg? #?(:cljr Exception :default AssertionError) #"Assert failed" (m/with-method-table f {:key 'm}))
                 "with-method-table should throw an Exception if called with something that's not a MethodTable")))))
 
   (t/testing "adding methods"
@@ -156,7 +156,7 @@
                      (i/with-dispatcher f' (m/standard-dispatcher dispatch-fn-2))))))
 
         (t/testing "preconditions"
-          (t/is (thrown-with-msg? AssertionError #"Assert failed" (i/with-dispatcher f (fn [])))
+          (t/is (thrown-with-msg? #?(:cljr Exception :default AssertionError) #"Assert failed" (i/with-dispatcher f (fn [])))
                 "with-dispatcher should throw an Exception if called with something that's not a Dispatcher")))))
 
   (t/testing "dispatch-value"

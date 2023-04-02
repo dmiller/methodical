@@ -28,10 +28,10 @@
 
 (t/deftest no-matching-method-test
   (let [multifn (clojure-multifn identity)]
-    (t/is (thrown-with-msg? UnsupportedOperationException #"No matching method for dispatch value \"x\"" (multifn "x"))
+    (t/is (thrown-with-msg? #?(:cljr InvalidOperationException :default UnsupportedOperationException) #"No matching method for dispatch value \"x\"" (multifn "x"))
           "Multifns with no default implementation should throw an Exception"))
   (let [named-multifn (impl/multifn (impl/default-multifn-impl identity) {:name 'named-multifn, :ns *ns*})]
-    (t/is (thrown-with-msg? UnsupportedOperationException
+    (t/is (thrown-with-msg? #?(:cljr InvalidOperationException :default UnsupportedOperationException) 
                             #"No matching named-multifn method for dispatch value \"z\""
                             (named-multifn "z"))
       "Multifns with no default implementation should throw an Exception")))
@@ -167,17 +167,17 @@
 (t/deftest prefer-method-validation-test
   (with-local-vars [hierarchy (make-ambiguous-hierarchy)]
     (let [multifn (ambiguous-hierarchy-multifn hierarchy)]
-      (t/is (thrown-with-msg? IllegalStateException
+      (t/is (thrown-with-msg? #?(:cljr InvalidOperationException :default IllegalStateException)
                             #"Cannot prefer dispatch value :parent-1 over itself"
                             (m/prefer-method multifn :parent-1 :parent-1))
             "Trying to prefer a dispatch value over itself should throw an Exception")
-      (t/is (thrown-with-msg? IllegalStateException
+      (t/is (thrown-with-msg? #?(:cljr InvalidOperationException :default IllegalStateException)
                             #"Preference conflict in multimethod: :parent-1 is already preferred to :parent-2"
                             (-> multifn
                                 (m/prefer-method :parent-1 :parent-2)
                                 (m/prefer-method :parent-2 :parent-1)))
             "You should not be able to prefer something if it would conflict with an existing prefer")
-      (t/is (thrown-with-msg? IllegalStateException
+      (t/is (thrown-with-msg? #?(:cljr InvalidOperationException :default IllegalStateException)
                             #"Preference conflict in multimethod: cannot prefer :parent-1 over its descendant :child"
                             (m/prefer-method multifn :parent-1 :child))
             "You should not be able to prefer an ancestor over its descendant."))))
