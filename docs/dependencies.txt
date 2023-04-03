@@ -403,10 +403,7 @@ PASSED
    [methodical.interface :as i]
    [methodical.util :as u]))
    
-FAIL in (primary-method-test) (:0)
-primary-method `primary-method` should not return default or parent primary methods -- just the exact match.
-expected: (= nil (u/primary-method f String))
-  actual: (not (= nil m1))
+PASSED
 
 (ns methodical.impl.dispatcher-test
   "Tests that run against all of our dispatchers."
@@ -486,6 +483,7 @@ PASSED
             [methodical.core :as m]))
 			
 **  NEEDS clojure/math/combinatorics -- just one function to replicate.
+** math.combinatorics should work in ClojureCLR as is.
 
 (ns methodical.impl.multifn.standard-test
   (:require
