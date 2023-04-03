@@ -169,7 +169,7 @@
   (loop [sum 0, [method & more] methods]
     (let [sum (+ (invoke method) sum)]
       (if (seq more)
-        (recur sum more)
+        (recur (long sum) more)                             ;;; Added long cast
         sum))))
 
 

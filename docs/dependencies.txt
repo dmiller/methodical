@@ -466,11 +466,7 @@ expected: (= ["Initiating shutdown..." "Shutting down web server..." "Shutting d
    [methodical.interface])
   (:import
    (methodical.interface MethodTable)))
-
-PASSED -- however;
-
-operator.cljc:172 recur arg for primitive local: sum is not matching primitive, had: Object, needed Int64
-Auto-boxing loop arg: sum   
+PASSED
 
 (ns methodical.impl.dispatcher.standard-test
   (:require
