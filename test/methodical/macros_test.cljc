@@ -5,7 +5,7 @@
    [clojure.test :as t]
    [methodical.core :as m]
    [methodical.impl :as impl]
-   [methodical.interface :as i]
+   [methodical.interface :as i]       [methodical.test-helper :as th]       ;;; added test-helper -- must not be on a separate line because line numbers are embedded in some of the tests!!!
    [methodical.macros :as macros]
    [methodical.util :as u]
    [potemkin.namespaces :as p.namespaces]))
@@ -214,7 +214,7 @@
     ;; as dispatch values; see [[methodical.macros/default-dispatch-value-spec]] for reasons why.
     (t/is (thrown-with-msg?
            clojure.lang.ExceptionInfo
-           (re-quote "([x] x) - failed: dispatch-value-spec in: [1] at: [:args-for-method-type :aux :dispatch-value]\r\n")
+           (re-quote (th/platform-newlines "([x] x) - failed: dispatch-value-spec in: [1] at: [:args-for-method-type :aux :dispatch-value]\n"))
            (#'macros/parse-defmethod-args mf1 '[:before ([x] x) ([x y] x)])))))
 
 (macros/defmethod mf1 :x
